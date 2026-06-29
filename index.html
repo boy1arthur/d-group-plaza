@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>⛪ 대면D조 말씀 & 광장</title>
-    <!-- 안정적인 Tailwind 3 버전 로드 -->
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
@@ -17,7 +16,6 @@
 
     <div class="flex-1 max-w-md w-full mx-auto bg-white shadow-sm flex flex-col min-h-screen relative">
         
-        <!-- 3개 하이브리드 탭 메뉴 -->
         <nav class="flex border-b border-gray-200 sticky top-0 bg-white z-30 text-sm">
             <button onclick="switchTab('member')" id="tabMember" class="flex-1 py-4 text-center font-bold text-emerald-700 border-b-2 border-emerald-600 flex items-center justify-center gap-0.5 cursor-pointer">
                 <span class="material-icons text-base">calendar_month</span> 말씀달력
@@ -30,7 +28,6 @@
             </button>
         </nav>
 
-        <!-- 📅 1. 말씀 달력 탭 -->
         <div id="viewMember" class="flex-1 flex flex-col p-5 gap-4 overflow-y-auto">
             <h2 class="text-xl font-bold text-gray-800">⛪ 주간 말씀 저장소</h2>
             <div id="loader" class="text-center py-10 text-gray-400">
@@ -40,14 +37,12 @@
             <div id="archiveContainer" class="flex flex-col gap-3"></div>
         </div>
 
-        <!-- 💬 2. 자유 광장 탭 -->
         <div id="viewSquare" class="hidden flex-1 flex flex-col p-5 gap-4 overflow-y-auto pb-24">
             <div class="flex flex-col gap-1">
                 <h2 class="text-xl font-bold text-gray-800">🌿 대면D조 자유 광장</h2>
                 <p class="text-xs text-gray-500">나누고 싶은 일상 이야기, 은혜받은 성경 구절을 편하게 한 줄 적어보세요.</p>
             </div>
 
-            <!-- 한 줄 글쓰기 폼 -->
             <div class="bg-gray-50 border border-gray-200 rounded-2xl p-3 flex flex-col gap-2">
                 <input type="text" id="squareAuthor" placeholder="이름 또는 닉네임" class="w-28 bg-white border border-gray-200 rounded-xl px-3 py-1.5 text-xs font-semibold focus:outline-none focus:border-emerald-500">
                 <div class="flex gap-2">
@@ -56,18 +51,15 @@
                 </div>
             </div>
 
-            <!-- 실시간 대화 타임라인 목록 -->
             <div id="squareTimeline" class="flex flex-col gap-2 mt-2"></div>
         </div>
 
-        <!-- 📝 3. 말씀 등록 관리자 탭 -->
         <div id="viewAdmin" class="hidden flex-1 flex flex-col p-5 gap-6 overflow-y-auto pb-32">
                 <div class="bg-emerald-50/50 border border-emerald-100 rounded-2xl p-4 flex flex-col gap-3">
                     <h3 class="text-sm font-bold text-emerald-800 flex items-center gap-1">
                         <span class="material-icons text-sm">info</span> 모임 정보 기입
                     </h3>
                     <div class="grid grid-cols-2 gap-2">
-                        <!-- 📅 텍스트 타이핑 대신 터치하면 달력이 열리는 스마트 선택기 -->
                         <input type="date" id="meetingDate" 
                                class="w-full bg-white border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-emerald-500 font-semibold text-gray-700 cursor-pointer">
                         <input type="text" id="groupName" value="대면D조" 
@@ -90,7 +82,6 @@
             </div>
         </div>
 
-        <!-- 조장용 고정 하단 바 -->
         <footer id="adminFooter" class="hidden p-5 border-t border-gray-100 bg-white sticky bottom-0 z-10">
             <div class="flex gap-3">
                 <button onclick="clearAll()" class="flex-[1] bg-gray-100 text-gray-500 font-bold py-3.5 rounded-xl text-sm">초기화</button>
@@ -100,7 +91,6 @@
             </div>
         </footer>
 
-        <!-- 모달 창 레이아웃 컴포넌트들 -->
         <div id="pickerModal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-end justify-center p-4">
             <div class="bg-white w-full max-w-md rounded-t-3xl p-6 shadow-2xl flex flex-col gap-4">
                 <div class="flex justify-between items-center border-b border-gray-100 pb-3">
@@ -172,13 +162,16 @@
             return result;
         }
 
+        // 💡 오늘 날짜를 달력 전용 YYYY-MM-DD 포맷 규격으로 파싱하여 자동 매칭하도록 교정
         window.onload = function() {
             const saved = localStorage.getItem(STORAGE_KEY);
             if (saved) { verses = JSON.parse(saved); render(); }
             
             const today = new Date();
-            const days = ['일', '월', '화', '수', '목', '금', '토'];
-            document.getElementById('meetingDate').value = `${today.getFullYear()}년 ${today.getMonth() + 1}월 ${today.getDate()}일 (${days[today.getDay()]})`;
+            const yyyy = today.getFullYear();
+            const mm = String(today.getMonth() + 1).padStart(2, '0');
+            const dd = String(today.getDate()).padStart(2, '0');
+            document.getElementById('meetingDate').value = `${yyyy}-${mm}-${dd}`;
             
             if(localStorage.getItem("square_author")) {
                 document.getElementById('squareAuthor').value = localStorage.getItem("square_author");
@@ -199,6 +192,26 @@
             if(mode === 'member' || mode === 'square') syncCloud();
         }
 
+        // 💡 [지능형 가독성 업그레이드] 서버 데이터 포맷에 구애받지 않는 한국어 요일 치환 엔진
+        function getFormattedDateString(customDateVal) {
+            const rawVal = customDateVal || document.getElementById('meetingDate').value;
+            if(!rawVal) return "날짜 미기입";
+            
+            try {
+                // 이미 한국어 포맷(년 월 일)인 경우 그대로 리턴
+                if (rawVal.includes("년") && rawVal.includes("월")) return rawVal;
+                
+                const dateObj = new Date(rawVal);
+                if (isNaN(dateObj.getTime())) return rawVal; // 파싱 실패 시 원본 리턴
+                
+                const days = ['일', '월', '화', '수', '목', '금', '토'];
+                return `${dateObj.getFullYear()}년 ${dateObj.getMonth() + 1}월 ${dateObj.getDate()}일 (${days[dateObj.getDay()]})`;
+            } catch(e) {
+                return rawVal;
+            }
+        }
+
+        // 🌐 데이터 가져오기 및 실시간 리스트 렌더링 동기화
         async function syncCloud() {
             if(!GOOGLE_API_URL || GOOGLE_API_URL.includes("YOUR_GOOGLE")) return;
             try {
@@ -209,10 +222,13 @@
                 const wordContainer = document.getElementById('archiveContainer');
                 wordContainer.innerHTML = "";
                 globalDataCache.words.forEach(item => {
+                    // 👑 대시(-) 형태로 넘어온 날짜 데이터를 "2026년 6월 29일 (월)"로 실시간 치환
+                    const displayDate = getFormattedDateString(item.date);
+
                     const card = document.createElement('div');
-                    card.className = "bg-emerald-50/10 border border-gray-200 hover:border-emerald-500 rounded-2xl p-4 cursor-pointer flex justify-between items-center transition-all";
-                    card.innerHTML = `<div><span class="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded-md">${item.date}</span><h4 class="text-base font-bold text-gray-800 mt-1.5">${item.topic}</h4></div><span class="material-icons text-gray-400">chevron_right</span>`;
-                    card.onclick = function() { openDetail(item); };
+                    card.className = "bg-emerald-50/10 border border-gray-200 hover:border-emerald-500 rounded-2xl p-4 cursor-pointer flex justify-between items-center transition-all shadow-xs";
+                    card.innerHTML = `<div><span class="text-[11px] bg-emerald-100 text-emerald-900 font-bold px-2.5 py-1 rounded-md tracking-tight">${displayDate}</span><h4 class="text-base font-bold text-gray-800 mt-2">${item.topic}</h4></div><span class="material-icons text-gray-400">chevron_right</span>`;
+                    card.onclick = function() { openDetail({ ...item, date: displayDate }); };
                     wordContainer.appendChild(card);
                 });
 
@@ -266,7 +282,9 @@
 
         async function sendToCloud() {
             if(verses.length === 0) return;
-            const dateVal = document.getElementById('meetingDate').value || "미기입";
+            
+            // 👑 업로드 시에도 달력 인풋의 날짜를 "년 월 일 (요일)" 포맷으로 안전 변환 호출
+            const dateVal = getFormattedDateString();
             const groupVal = document.getElementById('groupName').value || "대면D조";
             const topicVal = document.getElementById('meetingTopic').value || "주제 미기입";
             const pastedText = document.getElementById('bibleTextPaste').value.trim();
