@@ -43,7 +43,7 @@
 
         <!-- ⛪ 2. 예배 정리 탭 -->
         <div id="viewWorship" class="hidden flex-1 flex flex-col p-5 gap-4 overflow-y-auto">
-            <h2 class="text-xl font-bold text-gray-800">📖 주일 예배 말씀 정리</h2>
+            <h2 class="text-xl font-bold text-gray-800">📖 예배 말씀 정리</h2>
             <div id="worshipContainer" class="flex flex-col gap-3"></div>
         </div>
 
@@ -422,7 +422,7 @@
                 
                 // 첫 줄을 제목으로 자동 추출
                 const lines = content.split('\n').map(l => l.trim()).filter(l => l);
-                let title = "주일 예배 정리";
+                let title = "예배 말씀 정리";
                 if(lines.length > 0) {
                     // "2026. 6. 28(일)" 같은 날짜 형태가 첫 줄이면 그 다음 줄을 제목으로 씀
                     if(lines[0].includes("(") && lines[0].includes(")") && /[0-9]/.test(lines[0])) {
