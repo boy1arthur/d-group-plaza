@@ -490,7 +490,7 @@
             document.getElementById('modalTitle').innerText = startVerse ? `${selectedBookObj.name} ${selectedChapter}장 ${startVerse}절부터 ~ 몇 절까지?` : `${selectedBookObj.name} ${selectedChapter}장 - 시작 절 선택`;
             if(!startVerse) { document.getElementById('nextFlowBtn').classList.add('hidden'); } else { document.getElementById('nextFlowBtn').classList.remove('hidden'); }
             const grid = document.getElementById('numberGrid'); grid.innerHTML = "";
-            for (let i = 1; i <= 100; i++) {
+            for (let i = 1; i <= 176; i++) {
                 const btn = document.createElement('button');
                 if(startVerse && i === startVerse) { btn.className = "bg-emerald-600 text-white font-bold py-3 rounded-xl text-base"; } 
                 else { btn.className = "bg-gray-50 border border-gray-200 text-gray-800 font-semibold py-3 rounded-xl text-base"; }
